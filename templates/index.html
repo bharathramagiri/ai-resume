@@ -1,0 +1,464 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>AI Resume Screener</title>
+    <style>
+      /* Modern CSS Reset and Base Styles */
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+        font-family:
+          -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica,
+          Arial, sans-serif;
+      }
+
+      /* Added smooth scrolling for the navigation link */
+      html {
+        scroll-behavior: smooth;
+      }
+      body {
+        background-color: #f0f7ff;
+        color: #333;
+        line-height: 1.6;
+      }
+
+      /* Layout */
+      .navbar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 20px 5%;
+        background: white;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        position: sticky;
+        top: 0;
+        z-index: 100;
+      }
+      .logo {
+        font-size: 24px;
+        font-weight: 800;
+        color: #1a365d;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+      .logo-icon {
+        color: #007bff;
+        font-size: 28px;
+      }
+
+      .hero-section {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 80px 5%;
+        max-width: 1400px;
+        margin: 0 auto;
+        gap: 50px;
+        flex-wrap: wrap;
+        min-height: 90vh;
+      }
+      .hero-content {
+        flex: 1;
+        min-width: 300px;
+        max-width: 600px;
+      }
+      .hero-form-wrapper {
+        flex: 1;
+        min-width: 350px;
+        display: flex;
+        justify-content: center;
+      }
+
+      /* Left Side: Typography & Design */
+      .pill {
+        display: inline-block;
+        background: #e6f2ff;
+        color: #007bff;
+        padding: 5px 15px;
+        border-radius: 20px;
+        font-size: 14px;
+        font-weight: 600;
+        margin-bottom: 20px;
+      }
+      h1 {
+        font-size: 48px;
+        color: #2d3748;
+        line-height: 1.2;
+        margin-bottom: 20px;
+        letter-spacing: -1px;
+      }
+      h1 span {
+        color: #00b4d8;
+      }
+      .subtitle {
+        font-size: 18px;
+        color: #4a5568;
+        margin-bottom: 40px;
+      }
+
+      .stats-row {
+        display: flex;
+        gap: 30px;
+        margin-top: 40px;
+        border-top: 1px solid #e2e8f0;
+        padding-top: 30px;
+      }
+      .stat-box h3 {
+        color: #38a169;
+        font-size: 28px;
+        margin-bottom: 5px;
+      }
+      .stat-box p {
+        color: #718096;
+        font-size: 14px;
+      }
+
+      /* Right Side: The Screener Form */
+      .glass-card {
+        background: white;
+        padding: 40px;
+        border-radius: 16px;
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08);
+        width: 100%;
+        max-width: 500px;
+        position: relative;
+      }
+      .glass-card::before {
+        content: "✨ ATS Perfect";
+        position: absolute;
+        top: -15px;
+        left: -20px;
+        background: #e6fffa;
+        color: #319795;
+        padding: 8px 16px;
+        border-radius: 20px;
+        font-weight: bold;
+        font-size: 14px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+      }
+
+      .form-group {
+        margin-bottom: 25px;
+      }
+      label {
+        font-weight: 600;
+        color: #2d3748;
+        display: block;
+        margin-bottom: 8px;
+        font-size: 14px;
+      }
+      textarea {
+        width: 100%;
+        padding: 15px;
+        border: 2px solid #e2e8f0;
+        border-radius: 10px;
+        font-size: 15px;
+        resize: vertical;
+        transition: border-color 0.3s;
+      }
+      textarea:focus {
+        outline: none;
+        border-color: #00b4d8;
+      }
+
+      .file-upload-wrapper {
+        position: relative;
+        border: 2px dashed #cbd5e0;
+        border-radius: 10px;
+        padding: 20px;
+        text-align: center;
+        background: #f8fafc;
+        cursor: pointer;
+        transition: all 0.3s;
+      }
+      .file-upload-wrapper:hover {
+        border-color: #00b4d8;
+        background: #ebf8ff;
+      }
+      input[type="file"] {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        opacity: 0;
+        cursor: pointer;
+      }
+      .file-text {
+        color: #4a5568;
+        font-size: 14px;
+        font-weight: 500;
+      }
+      .file-text span {
+        color: #007bff;
+        text-decoration: underline;
+      }
+
+      .btn-primary {
+        background: linear-gradient(135deg, #00b4d8, #007bff);
+        color: white;
+        border: none;
+        padding: 16px 30px;
+        border-radius: 10px;
+        font-size: 18px;
+        font-weight: 600;
+        width: 100%;
+        cursor: pointer;
+        transition:
+          transform 0.2s,
+          box-shadow 0.2s;
+        box-shadow: 0 4px 15px rgba(0, 123, 255, 0.3);
+      }
+      .btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(0, 123, 255, 0.4);
+      }
+
+      .result-box {
+        margin-top: 25px;
+        padding: 20px;
+        border-radius: 12px;
+        text-align: center;
+        animation: fadeIn 0.5s ease-in;
+      }
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(10px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+      .score {
+        font-size: 42px;
+        font-weight: 800;
+        margin: 10px 0;
+      }
+      .high {
+        background-color: #f0fff4;
+        color: #22543d;
+        border: 2px solid #c6f6d5;
+      }
+      .medium {
+        background-color: #ebf8ff;
+        color: #2a4365;
+        border: 2px solid #bee3f8;
+      }
+      .low {
+        background-color: #fff5f5;
+        color: #742a2a;
+        border: 2px solid #fed7d7;
+      }
+
+      /* --- NEW: How It Works Section Styles --- */
+      .how-it-works-section {
+        padding: 100px 5%;
+        background-color: white;
+        text-align: center;
+        border-top: 1px solid #e2e8f0;
+      }
+      .how-it-works-section h2 {
+        font-size: 36px;
+        color: #2d3748;
+        margin-bottom: 60px;
+      }
+      .steps-container {
+        display: flex;
+        justify-content: center;
+        gap: 40px;
+        flex-wrap: wrap;
+        max-width: 1200px;
+        margin: 0 auto;
+      }
+      .step-card {
+        flex: 1;
+        min-width: 280px;
+        padding: 40px 30px;
+        background: #f8fafc;
+        border-radius: 16px;
+        border: 1px solid #e2e8f0;
+        transition: transform 0.3s;
+      }
+      .step-card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.05);
+      }
+      .step-number {
+        width: 60px;
+        height: 60px;
+        background: #e6f2ff;
+        color: #007bff;
+        font-size: 24px;
+        font-weight: bold;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 25px;
+      }
+      .step-card h3 {
+        color: #2d3748;
+        font-size: 22px;
+        margin-bottom: 15px;
+      }
+      .step-card p {
+        color: #4a5568;
+        font-size: 15px;
+        line-height: 1.7;
+      }
+
+      @media (max-width: 900px) {
+        .hero-section {
+          flex-direction: column;
+          text-align: center;
+          padding: 40px 5%;
+        }
+        .stats-row {
+          justify-content: center;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <nav class="navbar">
+      <div class="logo">
+        <span class="logo-icon">⚲</span> AI Resume Screener
+      </div>
+      <a
+        href="#how-it-works"
+        style="
+          text-decoration: none;
+          color: #007bff;
+          font-weight: 600;
+          padding: 8px 16px;
+          border-radius: 8px;
+          transition: background 0.3s;
+        "
+        >How it works</a
+      >
+    </nav>
+
+    <section class="hero-section">
+      <div class="hero-content">
+        <div class="pill">⚡ Trusted by HR Professionals</div>
+        <h1>Screen candidates with an <br /><span>AI-powered engine</span></h1>
+        <p class="subtitle">
+          The fastest way to find the perfect hire. Instantly compare resumes
+          against your job descriptions using semantic matching. Stop reading
+          every PDF and start interviewing the best.
+        </p>
+
+        <div class="stats-row">
+          <div class="stat-box">
+            <h3>100%</h3>
+            <p>Automated Semantic Matching</p>
+          </div>
+          <div class="stat-box">
+            <h3 style="color: #00b4d8">Seconds</h3>
+            <p>To analyze complex PDFs</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="hero-form-wrapper">
+        <div class="glass-card">
+          <form action="/" method="POST" enctype="multipart/form-data">
+            <div class="form-group">
+              <label for="job_desc">1. Paste the Job Description</label>
+              <textarea
+                name="job_desc"
+                id="job_desc"
+                rows="5"
+                required
+                placeholder="E.g. We are looking for a Software Engineer with Python experience..."
+              >
+{% if job_desc %}{{ job_desc }}{% endif %}</textarea
+              >
+            </div>
+
+            <div class="form-group">
+              <label>2. Upload Candidate Resume</label>
+              <div class="file-upload-wrapper">
+                <input
+                  type="file"
+                  name="resume"
+                  id="resume"
+                  accept=".pdf"
+                  required
+                />
+                <p class="file-text">
+                  Drag & drop your PDF or <span>browse files</span>
+                </p>
+              </div>
+            </div>
+
+            <button type="submit" class="btn-primary">
+              Analyze Match Score
+            </button>
+          </form>
+
+          {% if score is not none %}
+          <div
+            class="result-box {% if score > 70 %}high{% elif score > 40 %}medium{% else %}low{% endif %}"
+          >
+            <h4
+              style="
+                font-size: 14px;
+                text-transform: uppercase;
+                letter-spacing: 1px;
+              "
+            >
+              Semantic Match
+            </h4>
+            <div class="score">{{ score }}%</div>
+            <p><strong>Verdict:</strong> {{ verdict }}</p>
+          </div>
+          {% endif %} {% if error %}
+          <div class="result-box low">
+            <p><strong>Error:</strong> {{ error }}</p>
+          </div>
+          {% endif %}
+        </div>
+      </div>
+    </section>
+
+    <section id="how-it-works" class="how-it-works-section">
+      <h2>How the AI Engine Works</h2>
+      <div class="steps-container">
+        <div class="step-card">
+          <div class="step-number">1</div>
+          <h3>Text Extraction</h3>
+          <p>
+            When you upload a PDF, our Python backend uses PyPDF2 to strip away
+            complex formatting, tables, and fonts, leaving only the raw,
+            readable data.
+          </p>
+        </div>
+        <div class="step-card">
+          <div class="step-number">2</div>
+          <h3>Vector Embeddings</h3>
+          <p>
+            Our SentenceTransformer AI model processes the resume and job
+            description, converting the English text into high-dimensional
+            numerical vectors.
+          </p>
+        </div>
+        <div class="step-card">
+          <div class="step-number">3</div>
+          <h3>Cosine Similarity</h3>
+          <p>
+            Scikit-Learn calculates the mathematical angle between the two
+            vectors. The closer the vectors, the higher the semantic match
+            percentage!
+          </p>
+        </div>
+      </div>
+    </section>
+  </body>
+</html>
